@@ -108,6 +108,68 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
 
         }
 
+        elseif (0 === strpos($pathinfo, '/brand')) {
+            // brand_index
+            if ('/brand' === $trimmedPathinfo) {
+                if ('GET' !== $canonicalMethod) {
+                    $allow[] = 'GET';
+                    goto not_brand_index;
+                }
+
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'brand_index');
+                }
+
+                return array (  '_controller' => 'AppBundle\\Controller\\BrandController::indexAction',  '_route' => 'brand_index',);
+            }
+            not_brand_index:
+
+            // brand_new
+            if ('/brand/new' === $pathinfo) {
+                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
+                    $allow = array_merge($allow, array('GET', 'POST'));
+                    goto not_brand_new;
+                }
+
+                return array (  '_controller' => 'AppBundle\\Controller\\BrandController::newAction',  '_route' => 'brand_new',);
+            }
+            not_brand_new:
+
+            // brand_show
+            if (preg_match('#^/brand/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                if ('GET' !== $canonicalMethod) {
+                    $allow[] = 'GET';
+                    goto not_brand_show;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'brand_show')), array (  '_controller' => 'AppBundle\\Controller\\BrandController::showAction',));
+            }
+            not_brand_show:
+
+            // brand_edit
+            if (preg_match('#^/brand/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
+                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
+                    $allow = array_merge($allow, array('GET', 'POST'));
+                    goto not_brand_edit;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'brand_edit')), array (  '_controller' => 'AppBundle\\Controller\\BrandController::editAction',));
+            }
+            not_brand_edit:
+
+            // brand_delete
+            if (preg_match('#^/brand/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                if ('DELETE' !== $canonicalMethod) {
+                    $allow[] = 'DELETE';
+                    goto not_brand_delete;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'brand_delete')), array (  '_controller' => 'AppBundle\\Controller\\BrandController::deleteAction',));
+            }
+            not_brand_delete:
+
+        }
+
         // homepage
         if ('' === $trimmedPathinfo) {
             if (substr($pathinfo, -1) !== '/') {
@@ -115,6 +177,139 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
             }
 
             return array (  '_controller' => 'AppBundle\\Controller\\DefaultController::indexAction',  '_route' => 'homepage',);
+        }
+
+        if (0 === strpos($pathinfo, '/product')) {
+            // product_index
+            if ('/product' === $trimmedPathinfo) {
+                if ('GET' !== $canonicalMethod) {
+                    $allow[] = 'GET';
+                    goto not_product_index;
+                }
+
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'product_index');
+                }
+
+                return array (  '_controller' => 'AppBundle\\Controller\\ProductController::indexAction',  '_route' => 'product_index',);
+            }
+            not_product_index:
+
+            // product_new
+            if ('/product/new' === $pathinfo) {
+                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
+                    $allow = array_merge($allow, array('GET', 'POST'));
+                    goto not_product_new;
+                }
+
+                return array (  '_controller' => 'AppBundle\\Controller\\ProductController::newAction',  '_route' => 'product_new',);
+            }
+            not_product_new:
+
+            // product_show
+            if (preg_match('#^/product/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                if ('GET' !== $canonicalMethod) {
+                    $allow[] = 'GET';
+                    goto not_product_show;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'product_show')), array (  '_controller' => 'AppBundle\\Controller\\ProductController::showAction',));
+            }
+            not_product_show:
+
+            // product_edit
+            if (preg_match('#^/product/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
+                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
+                    $allow = array_merge($allow, array('GET', 'POST'));
+                    goto not_product_edit;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'product_edit')), array (  '_controller' => 'AppBundle\\Controller\\ProductController::editAction',));
+            }
+            not_product_edit:
+
+            // product_delete
+            if (preg_match('#^/product/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                if ('DELETE' !== $canonicalMethod) {
+                    $allow[] = 'DELETE';
+                    goto not_product_delete;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'product_delete')), array (  '_controller' => 'AppBundle\\Controller\\ProductController::deleteAction',));
+            }
+            not_product_delete:
+
+        }
+
+        // search_index
+        if ('/search' === $trimmedPathinfo) {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'search_index');
+            }
+
+            return array (  '_controller' => 'AppBundle\\Controller\\SearchController::indexAction',  '_route' => 'search_index',);
+        }
+
+        if (0 === strpos($pathinfo, '/type')) {
+            // type_index
+            if ('/type' === $trimmedPathinfo) {
+                if ('GET' !== $canonicalMethod) {
+                    $allow[] = 'GET';
+                    goto not_type_index;
+                }
+
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'type_index');
+                }
+
+                return array (  '_controller' => 'AppBundle\\Controller\\TypeController::indexAction',  '_route' => 'type_index',);
+            }
+            not_type_index:
+
+            // type_new
+            if ('/type/new' === $pathinfo) {
+                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
+                    $allow = array_merge($allow, array('GET', 'POST'));
+                    goto not_type_new;
+                }
+
+                return array (  '_controller' => 'AppBundle\\Controller\\TypeController::newAction',  '_route' => 'type_new',);
+            }
+            not_type_new:
+
+            // type_show
+            if (preg_match('#^/type/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                if ('GET' !== $canonicalMethod) {
+                    $allow[] = 'GET';
+                    goto not_type_show;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'type_show')), array (  '_controller' => 'AppBundle\\Controller\\TypeController::showAction',));
+            }
+            not_type_show:
+
+            // type_edit
+            if (preg_match('#^/type/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
+                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
+                    $allow = array_merge($allow, array('GET', 'POST'));
+                    goto not_type_edit;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'type_edit')), array (  '_controller' => 'AppBundle\\Controller\\TypeController::editAction',));
+            }
+            not_type_edit:
+
+            // type_delete
+            if (preg_match('#^/type/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                if ('DELETE' !== $canonicalMethod) {
+                    $allow[] = 'DELETE';
+                    goto not_type_delete;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'type_delete')), array (  '_controller' => 'AppBundle\\Controller\\TypeController::deleteAction',));
+            }
+            not_type_delete:
+
         }
 
         throw 0 < count($allow) ? new MethodNotAllowedException(array_unique($allow)) : new ResourceNotFoundException();
