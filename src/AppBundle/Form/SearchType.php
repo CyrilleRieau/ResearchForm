@@ -15,7 +15,7 @@ class SearchType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('ref')->add('name')->add('note')->add('price');
+        $builder->add('name')->add('note')->add('price');
     }
     /**
      * {@inheritdoc}

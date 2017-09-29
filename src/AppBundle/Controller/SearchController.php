@@ -30,7 +30,6 @@ class SearchController extends Controller
         $products = $em->getRepository('AppBundle:Product')->findAll();
         $searchform = $this->createForm(SearchType::class, null);
   
-    $ref = $request->request->get('searchform')['ref'];
     $name = $request->request->get('searchform')['name'];
     $note = $request->request->get('searchform')['note'];
     $price = $request->request->get('searchform')['price'];
@@ -39,12 +38,19 @@ class SearchController extends Controller
     
     if($price > 0) {
         $query->where('p.price > :price')->setParameter('price', $price);    
-        }
-
+    }
+    if($note > 0) {
+        $query->where('p.note > :note')->setParameter('note', $note);    
+    }
     if (!empty($name)){
-    $query->where('p.name like %:name%')->setParameter('name', $name);    
-        }
-    $query= $query->orderBy('p.price p.name', 'ASC')->getQuery();    
+    $query->orWhere('p.name like :name OR p.ref like :name')->setParameter('name', '%'.$name.'%');    
+    }
+    //Rajouter OrWhere pour que recherches se fasesnt par ref et name
+    $query= $query->addOrderBy('p.price', 'ASC')
+                    ->addOrderBy('p.name', 'ASC')
+                    ->addOrderBy('p.ref', 'ASC')
+                    ->addOrderBy('p.note', 'DESC')
+                    ->getQuery();    
     
     $products = $query->getResult();
     
