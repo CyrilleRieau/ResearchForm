@@ -29,7 +29,7 @@ class SearchController extends Controller
         $em = $this->getDoctrine()->getManager();
         $products = $em->getRepository('AppBundle:Product')->findAll();
         $searchform = $this->createForm(SearchType::class, null);
-  
+        
     $name = $request->request->get('searchform')['name'];
     $note = $request->request->get('searchform')['note'];
     $price = $request->request->get('searchform')['price'];
@@ -45,11 +45,17 @@ class SearchController extends Controller
     if (!empty($name)){
     $query->orWhere('p.name like :name OR p.ref like :name')->setParameter('name', '%'.$name.'%');    
     }
-    //Rajouter OrWhere pour que recherches se fasesnt par ref et name
+    if(isset($request->request->get('searchform')['isPremium'])) {
+        $isPremium = $request->request->get('searchform')['isPremium'];
+        if(!empty($isPremium)){
+            $query->where('p.isPremium = :isPremium')->setParameter('isPremium', $isPremium);
+        }
+    }
     $query= $query->addOrderBy('p.price', 'ASC')
                     ->addOrderBy('p.name', 'ASC')
                     ->addOrderBy('p.ref', 'ASC')
                     ->addOrderBy('p.note', 'DESC')
+                    ->addOrderBy('p.isPremium', 'ASC')
                     ->getQuery();    
     
     $products = $query->getResult();
