@@ -15,7 +15,7 @@ class SearchType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('ref')->add('name')->add('description')->add('isEnabled')->add('isPremium')->add('price')->add('note')->add('createdAt')->add('updatedAt');
+        $builder->add('ref')->add('name')->add('note')->add('price');
     }
     /**
      * {@inheritdoc}
@@ -32,7 +32,7 @@ class SearchType extends AbstractType
       */
      public function getBlockPrefix()
      {
-         return 'appbundle_product';
+         return 'searchform';
      }
    
 }
