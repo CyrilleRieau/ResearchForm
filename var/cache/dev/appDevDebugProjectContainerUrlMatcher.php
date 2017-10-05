@@ -108,68 +108,6 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
 
         }
 
-        elseif (0 === strpos($pathinfo, '/brand')) {
-            // brand_index
-            if ('/brand' === $trimmedPathinfo) {
-                if ('GET' !== $canonicalMethod) {
-                    $allow[] = 'GET';
-                    goto not_brand_index;
-                }
-
-                if (substr($pathinfo, -1) !== '/') {
-                    return $this->redirect($pathinfo.'/', 'brand_index');
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\BrandController::indexAction',  '_route' => 'brand_index',);
-            }
-            not_brand_index:
-
-            // brand_new
-            if ('/brand/new' === $pathinfo) {
-                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
-                    $allow = array_merge($allow, array('GET', 'POST'));
-                    goto not_brand_new;
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\BrandController::newAction',  '_route' => 'brand_new',);
-            }
-            not_brand_new:
-
-            // brand_show
-            if (preg_match('#^/brand/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
-                if ('GET' !== $canonicalMethod) {
-                    $allow[] = 'GET';
-                    goto not_brand_show;
-                }
-
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'brand_show')), array (  '_controller' => 'AppBundle\\Controller\\BrandController::showAction',));
-            }
-            not_brand_show:
-
-            // brand_edit
-            if (preg_match('#^/brand/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
-                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
-                    $allow = array_merge($allow, array('GET', 'POST'));
-                    goto not_brand_edit;
-                }
-
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'brand_edit')), array (  '_controller' => 'AppBundle\\Controller\\BrandController::editAction',));
-            }
-            not_brand_edit:
-
-            // brand_delete
-            if (preg_match('#^/brand/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
-                if ('DELETE' !== $canonicalMethod) {
-                    $allow[] = 'DELETE';
-                    goto not_brand_delete;
-                }
-
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'brand_delete')), array (  '_controller' => 'AppBundle\\Controller\\BrandController::deleteAction',));
-            }
-            not_brand_delete:
-
-        }
-
         // homepage
         if ('' === $trimmedPathinfo) {
             if (substr($pathinfo, -1) !== '/') {
@@ -179,136 +117,97 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
             return array (  '_controller' => 'AppBundle\\Controller\\DefaultController::indexAction',  '_route' => 'homepage',);
         }
 
-        if (0 === strpos($pathinfo, '/product')) {
-            // product_index
-            if ('/product' === $trimmedPathinfo) {
+        if (0 === strpos($pathinfo, '/places')) {
+            // get_places
+            if ('/places' === $pathinfo) {
                 if ('GET' !== $canonicalMethod) {
                     $allow[] = 'GET';
-                    goto not_product_index;
+                    goto not_get_places;
                 }
 
-                if (substr($pathinfo, -1) !== '/') {
-                    return $this->redirect($pathinfo.'/', 'product_index');
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\ProductController::indexAction',  '_route' => 'product_index',);
+                return array (  '_controller' => 'AppBundle\\Controller\\PlaceController:getPlacesAction',  '_format' => NULL,  '_route' => 'get_places',);
             }
-            not_product_index:
+            not_get_places:
 
-            // product_new
-            if ('/product/new' === $pathinfo) {
-                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
-                    $allow = array_merge($allow, array('GET', 'POST'));
-                    goto not_product_new;
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\ProductController::newAction',  '_route' => 'product_new',);
-            }
-            not_product_new:
-
-            // product_show
-            if (preg_match('#^/product/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            // get_place
+            if (preg_match('#^/places/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
                 if ('GET' !== $canonicalMethod) {
                     $allow[] = 'GET';
-                    goto not_product_show;
+                    goto not_get_place;
                 }
 
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'product_show')), array (  '_controller' => 'AppBundle\\Controller\\ProductController::showAction',));
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'get_place')), array (  '_controller' => 'AppBundle\\Controller\\PlaceController:getPlaceAction',  '_format' => NULL,));
             }
-            not_product_show:
+            not_get_place:
 
-            // product_edit
-            if (preg_match('#^/product/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
-                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
-                    $allow = array_merge($allow, array('GET', 'POST'));
-                    goto not_product_edit;
+            // post_places
+            if ('/places' === $pathinfo) {
+                if ('POST' !== $canonicalMethod) {
+                    $allow[] = 'POST';
+                    goto not_post_places;
                 }
 
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'product_edit')), array (  '_controller' => 'AppBundle\\Controller\\ProductController::editAction',));
+                return array (  '_controller' => 'AppBundle\\Controller\\PlaceController:postPlacesAction',  '_format' => NULL,  '_route' => 'post_places',);
             }
-            not_product_edit:
+            not_post_places:
 
-            // product_delete
-            if (preg_match('#^/product/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            // remove_place
+            if (preg_match('#^/places/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
                 if ('DELETE' !== $canonicalMethod) {
                     $allow[] = 'DELETE';
-                    goto not_product_delete;
+                    goto not_remove_place;
                 }
 
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'product_delete')), array (  '_controller' => 'AppBundle\\Controller\\ProductController::deleteAction',));
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'remove_place')), array (  '_controller' => 'AppBundle\\Controller\\PlaceController:removePlaceAction',  '_format' => NULL,));
             }
-            not_product_delete:
+            not_remove_place:
 
         }
 
-        // search_index
-        if ('/search' === $trimmedPathinfo) {
-            if (substr($pathinfo, -1) !== '/') {
-                return $this->redirect($pathinfo.'/', 'search_index');
-            }
-
-            return array (  '_controller' => 'AppBundle\\Controller\\SearchController::indexAction',  '_route' => 'search_index',);
-        }
-
-        if (0 === strpos($pathinfo, '/type')) {
-            // type_index
-            if ('/type' === $trimmedPathinfo) {
+        elseif (0 === strpos($pathinfo, '/users')) {
+            // get_users
+            if ('/users' === $pathinfo) {
                 if ('GET' !== $canonicalMethod) {
                     $allow[] = 'GET';
-                    goto not_type_index;
+                    goto not_get_users;
                 }
 
-                if (substr($pathinfo, -1) !== '/') {
-                    return $this->redirect($pathinfo.'/', 'type_index');
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\TypeController::indexAction',  '_route' => 'type_index',);
+                return array (  '_controller' => 'AppBundle\\Controller\\UserController:getUsersAction',  '_format' => NULL,  '_route' => 'get_users',);
             }
-            not_type_index:
+            not_get_users:
 
-            // type_new
-            if ('/type/new' === $pathinfo) {
-                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
-                    $allow = array_merge($allow, array('GET', 'POST'));
-                    goto not_type_new;
-                }
-
-                return array (  '_controller' => 'AppBundle\\Controller\\TypeController::newAction',  '_route' => 'type_new',);
-            }
-            not_type_new:
-
-            // type_show
-            if (preg_match('#^/type/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            // get_user
+            if (preg_match('#^/users/(?P<user_id>[^/]++)$#s', $pathinfo, $matches)) {
                 if ('GET' !== $canonicalMethod) {
                     $allow[] = 'GET';
-                    goto not_type_show;
+                    goto not_get_user;
                 }
 
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'type_show')), array (  '_controller' => 'AppBundle\\Controller\\TypeController::showAction',));
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'get_user')), array (  '_controller' => 'AppBundle\\Controller\\UserController:getUserAction',  '_format' => NULL,));
             }
-            not_type_show:
+            not_get_user:
 
-            // type_edit
-            if (preg_match('#^/type/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
-                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
-                    $allow = array_merge($allow, array('GET', 'POST'));
-                    goto not_type_edit;
+            // post_users
+            if ('/users' === $pathinfo) {
+                if ('POST' !== $canonicalMethod) {
+                    $allow[] = 'POST';
+                    goto not_post_users;
                 }
 
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'type_edit')), array (  '_controller' => 'AppBundle\\Controller\\TypeController::editAction',));
+                return array (  '_controller' => 'AppBundle\\Controller\\UserController:postUsersAction',  '_format' => NULL,  '_route' => 'post_users',);
             }
-            not_type_edit:
+            not_post_users:
 
-            // type_delete
-            if (preg_match('#^/type/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            // remove_user
+            if (preg_match('#^/users/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
                 if ('DELETE' !== $canonicalMethod) {
                     $allow[] = 'DELETE';
-                    goto not_type_delete;
+                    goto not_remove_user;
                 }
 
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'type_delete')), array (  '_controller' => 'AppBundle\\Controller\\TypeController::deleteAction',));
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'remove_user')), array (  '_controller' => 'AppBundle\\Controller\\UserController:removeUserAction',  '_format' => NULL,));
             }
-            not_type_delete:
+            not_remove_user:
 
         }
 
