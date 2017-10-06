@@ -3,17 +3,19 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * User
  *
- * @ORM\Table(name="user",
+ * @ORM\Table(name="users",
  *      uniqueConstraints={@ORM\UniqueConstraint(name="users_email_unique",columns={"email"})}
-* )
+* ) 
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
 class User
 {
+    const MATCH_VALUE_THRESHOLD = 25;
     /**
      * @var int
      *
@@ -126,5 +128,64 @@ class User
     {
         return $this->email;
     }
-}
+    /**
+     * @ORM\OneToMany(targetEntity="Preference", mappedBy="user")
+     * @var Preference[]
+     */
+    protected $preferences;
+    
+        public function __construct()
+        {
+            $this->preferences = new ArrayCollection();
+        }
+    
+        // ...
+    
+        public function getPreferences()
+        {
+            return $this->preferences;
+        }
+    
+        public function setPreferences($preferences)
+        {
+            $this->preferences = $preferences;
+        }
+        public function preferencesMatch($themes)
+        {
+            $matchValue = 0;
+            foreach ($this->preferences as $preference) {
+                foreach ($themes as $theme) {
+                    if ($preference->match($theme)) {
+                        $matchValue += $preference->getValue() * $theme->getValue();
+                    }
+                }
+            }
+    
+            return $matchValue >= self::MATCH_VALUE_THRESHOLD;
+        }
+    
 
+    /**
+     * Add preference
+     *
+     * @param \AppBundle\Entity\Preference $preference
+     *
+     * @return User
+     */
+    public function addPreference(\AppBundle\Entity\Preference $preference)
+    {
+        $this->preferences[] = $preference;
+
+        return $this;
+    }
+
+    /**
+     * Remove preference
+     *
+     * @param \AppBundle\Entity\Preference $preference
+     */
+    public function removePreference(\AppBundle\Entity\Preference $preference)
+    {
+        $this->preferences->removeElement($preference);
+    }
+}

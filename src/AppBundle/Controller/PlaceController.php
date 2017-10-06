@@ -14,8 +14,8 @@ use AppBundle\Entity\Place;
 class PlaceController extends Controller
 {
      /**
-     * @Rest\View()
-     * @Rest\Get("/places")
+     * @Rest\View(serializerGroups={"place"})
+     * @Rest\Get("/api/places")
      */
      public function getPlacesAction(Request $request)
      {
@@ -29,8 +29,8 @@ class PlaceController extends Controller
      }
 
     /**
-    * @Rest\View() 
-     * @Rest\Get("/places/{id}")
+    * @Rest\View(serializerGroups={"place"}) 
+     * @Rest\Get("/api/places/{id}")
      */
     
      public function getPlaceAction(Request $request)
@@ -45,8 +45,8 @@ class PlaceController extends Controller
          return $place;
      }
      /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED)
-     * @Rest\Post("/places")
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"place"})
+     * @Rest\Post("/api/places")
      */
     public function postPlacesAction(Request $request)
     {
@@ -65,8 +65,8 @@ class PlaceController extends Controller
         }
     }
     /**
-     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
-     * @Rest\Delete("/places/{id}")
+     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT, serializerGroups={"place"})
+     * @Rest\Delete("/api/places/{id}")
      */
      public function removePlaceAction(Request $request)
      {
@@ -74,8 +74,105 @@ class PlaceController extends Controller
          $place = $em->getRepository('AppBundle:Place')
                      ->find($request->get('id'));
          /* @var $place Place */
- if ($place){
-         $em->remove($place);
+         if (!$place){
+        return; 
+        }
+ foreach($place->getPrices() as $price){
+         $em->remove($price);
+ }
+ $em->remove($place);
          $em->flush();
-     }}
+     
+    }
+    
+    /**
+         * @Rest\View(serializerGroups={"place"})
+         * @Rest\Put("/api/places/{id}")
+         */
+        public function updatePlaceAction(Request $request)
+        {
+           /* $place = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:Place')
+            ->find($request->get('id'));
+            if (empty($place)) {
+                return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+            }
+            $form = $this->createForm(PlaceType::class, $place);
+            
+                    $form->submit($request->request->all());
+                    if ($form->isValid()) {
+                        $em = $this->get('doctrine.orm.entity_manager');
+                        // l'entité vient de la base, donc le merge n'est pas nécessaire.
+                        // il est utilisé juste par soucis de clarté
+                        $em->merge($place);
+                        $em->flush();
+                        return $place;
+                    } else {
+                        return $form;
+                    }*/
+
+                    return $this->updatePlace($request, true);
+
+        }
+    
+    /**
+     * @Rest\View(serializerGroups={"place"})
+     * @Rest\Patch("/api/places/{id}")
+     */
+    public function patchPlaceAction(Request $request)
+    {
+       /* $place = $this->get('doctrine.orm.entity_manager')
+                ->getRepository('AppBundle:Place')
+                ->find($request->get('id')); // L'identifiant en tant que paramètre n'est plus nécessaire
+        /* @var $place Place 
+
+        if (empty($place)) {
+            return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $form = $this->createForm(PlaceType::class, $place);
+
+         // Le paramètre false dit à Symfony de garder les valeurs dans notre 
+         // entité si l'utilisateur n'en fournit pas une dans sa requête
+        $form->submit($request->request->all(), false);
+
+        if ($form->isValid()) {
+            $em = $this->get('doctrine.orm.entity_manager');
+            // l'entité vient de la base, donc le merge n'est pas nécessaire.
+            // il est utilisé juste par soucis de clarté
+            $em->merge($place);
+            $em->flush();
+            return $place;
+        } else {
+            return $form;
+        }
+    */
+    return $this->updatePlace($request, false);
+    }
+    private function updatePlace(Request $request, $clearMissing)
+    {
+    $place = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:Place')
+            ->find($request->get('id')); // L'identifiant en tant que paramètre n'est plus nécessaire
+    /* @var $place Place */
+
+    if (empty($place)) {
+        return \FOS\RestBundle\View\View::create(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    $form = $this->createForm(PlaceType::class, $place);
+
+    // Le paramètre false dit à Symfony de garder les valeurs dans notre
+    // entité si l'utilisateur n'en fournit pas une dans sa requête
+    $form->submit($request->request->all(), $clearMissing);
+
+    if ($form->isValid()) {
+        $em = $this->get('doctrine.orm.entity_manager');
+        $em->persist($place);
+        $em->flush();
+        return $place;
+    } else {
+        return $form;
+    }
+}
 }

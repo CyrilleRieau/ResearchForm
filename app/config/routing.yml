@@ -9,3 +9,18 @@ places:
 users:
     type:     rest
     resource: AppBundle\Controller\UserController
+    
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+prices:
+    type:     rest
+    resource: AppBundle\Controller\Place\PriceController
+
+themes:
+    type:     rest
+    resource: AppBundle\Controller\Place\ThemeController
+
+preferences:
+    type:     rest
+    resource: AppBundle\Controller\User\PreferenceController

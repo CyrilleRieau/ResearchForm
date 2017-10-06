@@ -7,6 +7,6 @@ parameters:
     database_password: m0byl3tte
     mailer_transport: smtp
     mailer_host: 127.0.0.1
-    mailer_user: null
-    mailer_password: null
+    mailer_user: cyrille.rieau@gmail.com
+    mailer_password: test
     secret: 13c69f603e9247ab6885c613748f42e8a6f1bca2
